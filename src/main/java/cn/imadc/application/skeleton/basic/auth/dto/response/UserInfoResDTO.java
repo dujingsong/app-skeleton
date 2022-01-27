@@ -1,4 +1,4 @@
-package cn.imadc.application.skeleton.basic.rbac.user.dto.response;
+package cn.imadc.application.skeleton.basic.auth.dto.response;
 
 import cn.imadc.application.base.common.response.BaseResponseDTO;
 import cn.imadc.application.skeleton.basic.rbac.role.entity.Role;

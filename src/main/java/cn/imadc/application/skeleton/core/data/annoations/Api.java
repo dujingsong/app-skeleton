@@ -1,6 +1,6 @@
 package cn.imadc.application.skeleton.core.data.annoations;
 
-import cn.imadc.application.skeleton.core.data.enums.AuthType;
+import cn.imadc.application.base.common.enums.AuthType;
 
 import java.lang.annotation.*;
 

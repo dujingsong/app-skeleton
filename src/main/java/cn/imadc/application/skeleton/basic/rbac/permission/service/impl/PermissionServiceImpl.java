@@ -15,6 +15,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.List;
+
 /**
  * <p>
  * 菜单表 服务实现类
@@ -26,6 +28,8 @@ import org.springframework.util.CollectionUtils;
 @AllArgsConstructor
 @Service
 public class PermissionServiceImpl extends BaseMPServiceImpl<PermissionMapper, Permission> implements IPermissionService {
+
+    private final PermissionMapper permissionMapper;
 
     @Override
     public ResponseW find(PermissionFindReqDTO reqDTO) {
@@ -64,5 +68,10 @@ public class PermissionServiceImpl extends BaseMPServiceImpl<PermissionMapper, P
         userUpdateWrapper.eq("id", permission.getId());
         userUpdateWrapper.set(Constant.DEL_FLAG, Constant.DEL_VAL);
         return update(userUpdateWrapper) ? ResponseW.success() : ResponseW.error();
+    }
+
+    @Override
+    public List<Permission> getUserPermission(Long userId) {
+        return permissionMapper.getUserPermission(userId);
     }
 }

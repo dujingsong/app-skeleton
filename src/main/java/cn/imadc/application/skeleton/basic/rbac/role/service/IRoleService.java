@@ -4,6 +4,9 @@ import cn.imadc.application.base.common.response.ResponseW;
 import cn.imadc.application.base.mybatisplus.repository.IBaseMPService;
 import cn.imadc.application.skeleton.basic.rbac.role.dto.request.RoleFindReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.role.entity.Role;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -46,4 +49,12 @@ public interface IRoleService extends IBaseMPService<Role> {
      * @return 结果
      */
     ResponseW delete(Role role);
+
+    /**
+     * 获取用户绑定的角色信息
+     *
+     * @param userId 用户ID
+     * @return 绑定的角色信息
+     */
+    List<Role> getUserRole(Long userId);
 }

@@ -15,6 +15,8 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 角色表 服务实现类
@@ -26,6 +28,8 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 @Service
 public class RoleServiceImpl extends BaseMPServiceImpl<RoleMapper, Role> implements IRoleService {
+
+    private final RoleMapper roleMapper;
 
     @Override
     public ResponseW find(RoleFindReqDTO reqDTO) {
@@ -65,5 +69,10 @@ public class RoleServiceImpl extends BaseMPServiceImpl<RoleMapper, Role> impleme
         userUpdateWrapper.eq("id", role.getId());
         userUpdateWrapper.set(Constant.DEL_FLAG, Constant.DEL_VAL);
         return update(userUpdateWrapper) ? ResponseW.success() : ResponseW.error();
+    }
+
+    @Override
+    public List<Role> getUserRole(Long userId) {
+        return roleMapper.getUserRole(userId);
     }
 }

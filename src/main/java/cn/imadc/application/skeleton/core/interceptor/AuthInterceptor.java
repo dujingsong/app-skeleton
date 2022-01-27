@@ -2,10 +2,10 @@ package cn.imadc.application.skeleton.core.interceptor;
 
 import cn.imadc.application.base.common.context.ReqCtxConstant;
 import cn.imadc.application.base.common.context.RequestContext;
+import cn.imadc.application.base.common.enums.AuthType;
 import cn.imadc.application.base.common.exception.NotLoginException;
 import cn.imadc.application.base.common.exception.UnauthorizedException;
 import cn.imadc.application.skeleton.core.data.annoations.Api;
-import cn.imadc.application.skeleton.core.data.enums.AuthType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -35,16 +35,16 @@ public class AuthInterceptor implements HandlerInterceptor {
         RequestContext currentContext = RequestContext.getCurrentContext();
 
         Api api = currentContext.get(ReqCtxConstant.API, Api.class);
-        if (null != api && null != api.authType() && api.authType().equals(AuthType.ANONYMOUS)) {
+        if (null != api && api.authType().equals(AuthType.ANONYMOUS)) {
             return true;
         }
 
         // 登录与否
-        boolean notLogin = !currentContext.containsKey(ReqCtxConstant.USER);
+        boolean notLogin = !currentContext.containsKey(ReqCtxConstant.ID);
         if (notLogin) throw new NotLoginException();
 
         // 鉴权
-        boolean noPermission = !currentContext.containsKey(ReqCtxConstant.USER);
+        boolean noPermission = !currentContext.containsKey(ReqCtxConstant.ID);
         if (noPermission) throw new UnauthorizedException();
 
         return true;

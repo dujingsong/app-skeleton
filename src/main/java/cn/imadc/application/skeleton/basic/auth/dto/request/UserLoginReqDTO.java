@@ -1,4 +1,4 @@
-package cn.imadc.application.skeleton.basic.rbac.user.dto.request;
+package cn.imadc.application.skeleton.basic.auth.dto.request;
 
 import cn.imadc.application.base.common.request.BaseRequestDTO;
 import lombok.Getter;

@@ -5,6 +5,7 @@ import cn.imadc.application.base.common.context.ReqCtxConstant;
 import cn.imadc.application.base.common.context.RequestContext;
 import cn.imadc.application.skeleton.core.data.annoations.Api;
 import cn.imadc.application.skeleton.core.data.constant.Constant;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -35,8 +36,10 @@ public class CtxInterceptor implements HandlerInterceptor {
         if (StringUtils.isNotBlank(token)) {
             requestContext.put(ReqCtxConstant.TOKEN, token);
 
-            requestContext.put(ReqCtxConstant.ID, JWT.subject(token));
+            DecodedJWT decodedJWT = JWT.decodedJWT(token);
+            requestContext.put(ReqCtxConstant.ID, decodedJWT.getSubject());
         }
+
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Api api = handlerMethod.getMethodAnnotation(Api.class);
         if (null != api) {

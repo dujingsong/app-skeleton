@@ -4,6 +4,9 @@ import cn.imadc.application.base.common.response.ResponseW;
 import cn.imadc.application.base.mybatisplus.repository.IBaseMPService;
 import cn.imadc.application.skeleton.basic.rbac.permission.dto.request.PermissionFindReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.permission.entity.Permission;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -46,4 +49,12 @@ public interface IPermissionService extends IBaseMPService<Permission> {
      * @return 结果
      */
     ResponseW delete(Permission permission);
+
+    /**
+     * 获取用户权限
+     *
+     * @param userId 用户ID
+     * @return 权限
+     */
+    List<Permission> getUserPermission(@Param("userId") Long userId);
 }
