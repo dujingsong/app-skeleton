@@ -1,5 +1,6 @@
 package cn.imadc.application.skeleton.basic.rbac.permission.entity;
 
+import cn.imadc.application.base.common.persistence.BaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-public class Permission implements Serializable {
+public class Permission extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

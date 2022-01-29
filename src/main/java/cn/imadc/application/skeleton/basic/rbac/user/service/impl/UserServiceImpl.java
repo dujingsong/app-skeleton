@@ -1,26 +1,33 @@
 package cn.imadc.application.skeleton.basic.rbac.user.service.impl;
 
+import cn.hutool.core.date.DateUtil;
+import cn.imadc.application.base.common.exception.BizException;
 import cn.imadc.application.base.common.response.ResponseW;
 import cn.imadc.application.base.mybatisplus.repository.impl.BaseMPServiceImpl;
 import cn.imadc.application.base.toolkit.encryption.Md5Util;
-import cn.imadc.application.skeleton.basic.rbac.permission.mapper.PermissionMapper;
-import cn.imadc.application.skeleton.basic.rbac.permission.service.IPermissionService;
-import cn.imadc.application.skeleton.basic.rbac.role.mapper.RoleMapper;
 import cn.imadc.application.skeleton.basic.rbac.user.dto.request.UserFindReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.user.dto.request.UserUpdatePwdReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.user.entity.User;
 import cn.imadc.application.skeleton.basic.rbac.user.mapper.UserMapper;
 import cn.imadc.application.skeleton.basic.rbac.user.service.IUserService;
 import cn.imadc.application.skeleton.basic.rbac.userRole.service.IUserRoleService;
 import cn.imadc.application.skeleton.core.data.constant.Constant;
+import cn.imadc.application.skeleton.core.data.constant.Word;
+import cn.imadc.application.skeleton.core.data.property.AppProp;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -36,10 +43,8 @@ import java.util.*;
 public class UserServiceImpl extends BaseMPServiceImpl<UserMapper, User> implements IUserService {
 
     private final UserMapper userMapper;
-    private final RoleMapper roleMapper;
-    private final PermissionMapper permissionMapper;
-    private final IPermissionService permissionService;
     private final IUserRoleService userRoleService;
+    private final AppProp appProp;
 
     @Override
     public ResponseW find(UserFindReqDTO reqDTO) {
@@ -118,6 +123,7 @@ public class UserServiceImpl extends BaseMPServiceImpl<UserMapper, User> impleme
         return status ? ResponseW.success() : ResponseW.error();
     }
 
+    @Transactional
     @Override
     public ResponseW delete(User user) {
         UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
@@ -126,4 +132,86 @@ public class UserServiceImpl extends BaseMPServiceImpl<UserMapper, User> impleme
         return update(userUpdateWrapper) ? ResponseW.success() : ResponseW.error();
     }
 
+    @Transactional
+    @Override
+    public ResponseW updateLastLoginTime(Long id) {
+        User user = new User();
+        user.setLastLoginTime(LocalDateTime.now());
+
+        UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
+        userUpdateWrapper.eq("id", id);
+        return userMapper.update(user, userUpdateWrapper) == 1 ? ResponseW.success() : ResponseW.error(Word.OP_FAIL);
+    }
+
+    @Transactional
+    @Override
+    public ResponseW updateBasicInfo(User user) {
+        User newUser = new User();
+        newUser.setName(user.getName());
+        newUser.setProfile(user.getProfile());
+        newUser.setEmail(user.getEmail());
+
+        UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
+        userUpdateWrapper.eq("id", user.getId());
+        return userMapper.update(newUser, userUpdateWrapper) == 1 ? ResponseW.success() : ResponseW.error(Word.OP_FAIL);
+    }
+
+    @Transactional
+    @Override
+    public ResponseW updateAvatar(Long userId, MultipartFile avatar) {
+        String fileStorePath = appProp.getFileStorePath(), avatarPath = appProp.getAvatarPath();
+        String ymd = DateUtil.format(LocalDateTime.now(), Constant.YYYY_MM_DD) + Constant.SLASH;
+
+        File targetFilePath = new File(fileStorePath + avatarPath + ymd);
+        if (!targetFilePath.exists() && !targetFilePath.mkdirs()) {
+            return ResponseW.error(Word.MK_DIRS_FAIL);
+        }
+
+        String originalFilename = avatar.getOriginalFilename();
+        if (StringUtils.isEmpty(originalFilename)) {
+            return ResponseW.error("图片名称为空");
+        }
+
+        String newFilename = userId + "-" + System.currentTimeMillis() + ".png";
+        File targetFile = new File(fileStorePath + avatarPath + ymd + newFilename);
+        try {
+            avatar.transferTo(targetFile);
+        } catch (IOException e) {
+            return ResponseW.error("图片存储异常");
+        }
+
+        // 更新头像
+        User newUser = new User();
+        newUser.setAvatar(ymd + newFilename);
+
+        UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
+        userUpdateWrapper.eq("id", userId);
+
+        int updatedRows = userMapper.update(newUser, userUpdateWrapper);
+        if (updatedRows != 1) {
+            throw new BizException(Word.OP_FAIL);
+        }
+
+        return ResponseW.success(ymd + newFilename);
+    }
+
+    @Transactional
+    @Override
+    public ResponseW updatePassword(UserUpdatePwdReqDTO reqDTO) {
+        User user = userMapper.selectById(reqDTO.getUserId());
+        if (!StringUtils.equals(Md5Util.md5(reqDTO.getOldPassword()), user.getPassword())) {
+            return ResponseW.error("原密码不正确");
+        }
+
+        User newUser = new User();
+        newUser.setPassword(Md5Util.md5(reqDTO.getNewPassword()));
+
+        UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
+        userUpdateWrapper.eq("id", reqDTO.getUserId());
+
+        if (userMapper.update(newUser, userUpdateWrapper) != 1) {
+            throw new BizException(Word.OP_FAIL);
+        }
+        return ResponseW.success();
+    }
 }

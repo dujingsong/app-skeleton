@@ -1,15 +1,16 @@
 package cn.imadc.application.skeleton.basic.rbac.user.controller;
 
 
+import cn.imadc.application.base.common.context.ReqCtxConstant;
+import cn.imadc.application.base.common.context.RequestContext;
 import cn.imadc.application.base.common.response.ResponseW;
 import cn.imadc.application.skeleton.basic.rbac.user.dto.request.UserFindReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.user.dto.request.UserUpdatePwdReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.user.entity.User;
 import cn.imadc.application.skeleton.basic.rbac.user.service.IUserService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>
@@ -70,4 +71,42 @@ public class UserController {
         return userService.delete(user);
     }
 
+    /**
+     * 更新基本信息
+     *
+     * @param user 参数
+     * @return 结果
+     */
+    @RequestMapping(value = "updateBasicInfo", method = RequestMethod.POST)
+    public ResponseW updateBasicInfo(@RequestBody User user) {
+        RequestContext requestContext = RequestContext.getCurrentContext();
+        user.setId(requestContext.get(ReqCtxConstant.ID, Long.class));
+        return userService.updateBasicInfo(user);
+    }
+
+    /**
+     * 更新密码
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    @RequestMapping(value = "updatePassword", method = RequestMethod.POST)
+    public ResponseW updatePassword(@RequestBody UserUpdatePwdReqDTO reqDTO) {
+        RequestContext requestContext = RequestContext.getCurrentContext();
+        reqDTO.setUserId(requestContext.get(ReqCtxConstant.ID, Long.class));
+        return userService.updatePassword(reqDTO);
+    }
+
+    /**
+     * 更新头像
+     *
+     * @param avatar 头像图片
+     * @return 结果
+     */
+    @RequestMapping(value = "updateAvatar", method = RequestMethod.POST)
+    public ResponseW updateAvatar(@RequestPart("file") MultipartFile avatar) {
+        RequestContext requestContext = RequestContext.getCurrentContext();
+        Long userId = requestContext.get(ReqCtxConstant.ID, Long.class);
+        return userService.updateAvatar(userId, avatar);
+    }
 }

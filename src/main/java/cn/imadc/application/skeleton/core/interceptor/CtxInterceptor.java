@@ -37,7 +37,7 @@ public class CtxInterceptor implements HandlerInterceptor {
             requestContext.put(ReqCtxConstant.TOKEN, token);
 
             DecodedJWT decodedJWT = JWT.decodedJWT(token);
-            requestContext.put(ReqCtxConstant.ID, decodedJWT.getSubject());
+            requestContext.put(ReqCtxConstant.ID, Long.parseLong(decodedJWT.getSubject()));
         }
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;

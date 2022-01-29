@@ -1,5 +1,6 @@
 package cn.imadc.application.skeleton.basic.rbac.rolePermission.entity;
 
+import cn.imadc.application.base.common.persistence.BaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -19,7 +20,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @TableName("role_permission")
-public class RolePermission implements Serializable {
+public class RolePermission extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,11 +39,5 @@ public class RolePermission implements Serializable {
      * 菜单id
      */
     private Long permissionId;
-
-    /**
-     * 0：未删除；1：已删除
-     */
-    private Integer delFlag;
-
 
 }

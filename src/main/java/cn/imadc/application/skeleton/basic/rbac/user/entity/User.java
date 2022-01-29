@@ -1,5 +1,6 @@
 package cn.imadc.application.skeleton.basic.rbac.user.entity;
 
+import cn.imadc.application.base.common.persistence.BaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -19,7 +21,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class User implements Serializable {
+public class User extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -45,11 +47,6 @@ public class User implements Serializable {
     private String password;
 
     /**
-     * 是否删除0：未删除；1：已删除
-     */
-    private Integer delFlag;
-
-    /**
      * 备注
      */
     private String notes;
@@ -58,6 +55,21 @@ public class User implements Serializable {
      * 邮箱
      */
     private String email;
+
+    /**
+     * 简介
+     */
+    private String profile;
+
+    /**
+     * 最后一次登录时间
+     */
+    private LocalDateTime lastLoginTime;
+
+    /**
+     * 头像
+     */
+    private String avatar;
 
     // ---参数---
 

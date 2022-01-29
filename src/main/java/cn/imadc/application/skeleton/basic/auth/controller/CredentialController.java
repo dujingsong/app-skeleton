@@ -59,8 +59,8 @@ public class CredentialController {
     @RequestMapping(value = "info", method = RequestMethod.GET)
     public ResponseW info() {
         RequestContext requestContext = RequestContext.getCurrentContext();
-        String id = requestContext.get(ReqCtxConstant.ID, String.class);
-        return credentialService.info(Long.parseLong(id));
+        Long id = requestContext.get(ReqCtxConstant.ID, Long.class);
+        return credentialService.info(id);
     }
 
     /**
@@ -71,7 +71,7 @@ public class CredentialController {
     @RequestMapping(value = "nav", method = RequestMethod.GET)
     public ResponseW nav() {
         RequestContext requestContext = RequestContext.getCurrentContext();
-        String id = requestContext.get(ReqCtxConstant.ID, String.class);
-        return credentialService.nav(Long.parseLong(id));
+        Long id = requestContext.get(ReqCtxConstant.ID, Long.class);
+        return credentialService.nav(id);
     }
 }

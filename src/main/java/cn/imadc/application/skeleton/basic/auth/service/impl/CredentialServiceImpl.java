@@ -4,14 +4,14 @@ import cn.imadc.application.base.auth.jwt.JWT;
 import cn.imadc.application.base.common.response.ResponseW;
 import cn.imadc.application.base.toolkit.encryption.Md5Util;
 import cn.imadc.application.skeleton.basic.auth.dto.request.UserLoginReqDTO;
+import cn.imadc.application.skeleton.basic.auth.dto.response.UserInfoResDTO;
 import cn.imadc.application.skeleton.basic.auth.dto.response.UserLoginResDTO;
+import cn.imadc.application.skeleton.basic.auth.dto.response.UserNavResDTO;
 import cn.imadc.application.skeleton.basic.auth.service.ICredentialService;
 import cn.imadc.application.skeleton.basic.rbac.permission.entity.Permission;
 import cn.imadc.application.skeleton.basic.rbac.permission.service.IPermissionService;
 import cn.imadc.application.skeleton.basic.rbac.role.entity.Role;
 import cn.imadc.application.skeleton.basic.rbac.role.service.IRoleService;
-import cn.imadc.application.skeleton.basic.auth.dto.response.UserInfoResDTO;
-import cn.imadc.application.skeleton.basic.auth.dto.response.UserNavResDTO;
 import cn.imadc.application.skeleton.basic.rbac.user.entity.User;
 import cn.imadc.application.skeleton.basic.rbac.user.service.IUserService;
 import cn.imadc.application.skeleton.core.data.constant.Word;
@@ -42,6 +42,9 @@ public class CredentialServiceImpl implements ICredentialService {
         User user = userService.getOne(queryWrapper);
 
         if (null == user) return ResponseW.error(Word.CREDENTIALS_ERROR);
+
+        // 最后一次登录时间
+        userService.updateLastLoginTime(user.getId());
 
         String token = JWT.generate(ST.USER, user.getId(), appProp.getCtxTimeout(), appProp.getCtxTimeoutUnit());
         UserLoginResDTO userLoginResDTO = new UserLoginResDTO();

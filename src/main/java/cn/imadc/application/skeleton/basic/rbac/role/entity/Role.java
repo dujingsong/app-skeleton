@@ -1,5 +1,6 @@
 package cn.imadc.application.skeleton.basic.rbac.role.entity;
 
+import cn.imadc.application.base.common.persistence.BaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-public class Role implements Serializable {
+public class Role extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,11 +32,6 @@ public class Role implements Serializable {
      * 角色名称
      */
     private String name;
-
-    /**
-     * 是否删除0：未删除；1：已删除
-     */
-    private Integer delFlag;
 
     /**
      * 备注

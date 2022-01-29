@@ -30,4 +30,15 @@ public class AppProp {
      * 会话超时单位
      */
     private TimeUnit ctxTimeoutUnit;
+
+    // -----------------------------------------------文件相关-----------------------------------------------
+    /**
+     * 文件存放路径
+     */
+    private String fileStorePath;
+    /**
+     * 头像文件存放路径
+     */
+    private String avatarPath;
+
 }
