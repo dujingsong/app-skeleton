@@ -35,16 +35,16 @@ INSERT INTO `permission`
 VALUES (1, '控制面板', 'system', NULL, 0, 0, 'RouteView', 'setting', '2022-01-28 10:18:56', '2022-01-29 10:54:20', NULL,
         NULL, NULL, NULL);
 INSERT INTO `permission`
-VALUES (2, '菜单管理', 'permission', NULL, 0, 4, 'PermissionList', NULL, '2022-01-28 10:18:56', '2022-01-28 10:18:56', NULL,
+VALUES (2, '菜单管理', 'permission', NULL, 0, 1, 'PermissionList', NULL, '2022-01-28 10:18:56', '2022-01-28 10:18:56', NULL,
         NULL, NULL, NULL);
 INSERT INTO `permission`
-VALUES (3, '角色管理', 'role', NULL, 0, 4, 'RoleList', NULL, '2022-01-28 10:18:56', '2022-01-28 10:18:56', NULL, NULL, NULL,
+VALUES (3, '角色管理', 'role', NULL, 0, 1, 'RoleList', NULL, '2022-01-28 10:18:56', '2022-01-28 10:18:56', NULL, NULL, NULL,
         NULL);
 INSERT INTO `permission`
-VALUES (4, '用户管理', 'user', NULL, 0, 4, 'UserList', NULL, '2022-01-28 10:18:56', '2022-01-28 10:18:56', NULL, NULL, NULL,
+VALUES (4, '用户管理', 'user', NULL, 0, 1, 'UserList', NULL, '2022-01-28 10:18:56', '2022-01-28 10:18:56', NULL, NULL, NULL,
         NULL);
 INSERT INTO `permission`
-VALUES (5, '发布公告', 'notice', NULL, 0, 4, 'UserList', NULL, '2022-01-29 11:10:28', '2022-01-29 11:10:28', NULL, NULL,
+VALUES (5, '发布公告', 'notice', NULL, 0, 1, 'UserList', NULL, '2022-01-29 11:10:28', '2022-01-29 11:10:28', NULL, NULL,
         NULL, NULL);
 
 -- ----------------------------
@@ -124,22 +124,23 @@ VALUES (5, 1, 5, 0, '2022-01-29 11:10:41', '2022-01-29 11:10:41', NULL, NULL, NU
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`
 (
-    `id`              bigint(20)                                                    NOT NULL AUTO_INCREMENT COMMENT '自增长主键',
-    `name`            varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL COMMENT '用户名称',
-    `password`        varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL COMMENT '用户密码',
-    `del_flag`        tinyint(4)                                                    NOT NULL DEFAULT 0 COMMENT '是否删除0：未删除；1：已删除',
-    `notes`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL COMMENT '备注',
-    `username`        varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL COMMENT '用户名',
-    `email`           varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL     DEFAULT NULL COMMENT '邮箱',
-    `create_time`     timestamp                                                     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`     timestamp                                                     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `create_by`       varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL     DEFAULT NULL COMMENT '创建者',
-    `update_by`       varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL     DEFAULT NULL COMMENT '更新者',
-    `create_by_id`    bigint(20)                                                    NULL     DEFAULT NULL COMMENT '创建者ID',
-    `update_by_id`    bigint(20)                                                    NULL     DEFAULT NULL COMMENT '更新者ID',
-    `profile`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL COMMENT '简介',
-    `last_login_time` timestamp                                                     NULL     DEFAULT NULL COMMENT '最后一次登陆时间',
-    `avatar`          varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL     DEFAULT NULL COMMENT '头像',
+    `id`                 bigint(20)                                                    NOT NULL AUTO_INCREMENT COMMENT '自增长主键',
+    `name`               varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL COMMENT '用户名称',
+    `password`           varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL COMMENT '用户密码',
+    `del_flag`           tinyint(4)                                                    NOT NULL DEFAULT 0 COMMENT '是否删除0：未删除；1：已删除',
+    `notes`              varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL COMMENT '备注',
+    `username`           varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL COMMENT '用户名',
+    `email`              varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL     DEFAULT NULL COMMENT '邮箱',
+    `create_time`        timestamp                                                     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`        timestamp                                                     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `create_by`          varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL     DEFAULT NULL COMMENT '创建者',
+    `update_by`          varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL     DEFAULT NULL COMMENT '更新者',
+    `create_by_id`       bigint(20)                                                    NULL     DEFAULT NULL COMMENT '创建者ID',
+    `update_by_id`       bigint(20)                                                    NULL     DEFAULT NULL COMMENT '更新者ID',
+    `profile`            varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL     DEFAULT NULL COMMENT '简介',
+    `last_login_time`    timestamp                                                     NULL     DEFAULT NULL COMMENT '最后一次登陆时间',
+    `current_login_time` timestamp                                                     NULL     DEFAULT NULL COMMENT '本次登陆时间',
+    `avatar`             varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NULL     DEFAULT NULL COMMENT '头像',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 5
