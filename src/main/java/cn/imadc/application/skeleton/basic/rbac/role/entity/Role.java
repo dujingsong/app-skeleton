@@ -39,8 +39,12 @@ public class Role extends BaseEntity implements Serializable {
     private String notes;
 
     /**
-     * 类型 PERM：默认角色；ITEM：接入项目绑定角色；ITEM_FLOW：接入项目流程绑定角色
+     * 类型 PERM：默认角色
      */
     private String type;
 
+    /**
+     * 状态：0启用；1禁用
+     */
+    private Integer status;
 }

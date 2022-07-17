@@ -7,7 +7,7 @@ import cn.imadc.application.skeleton.basic.rbac.role.entity.Role;
 import cn.imadc.application.skeleton.basic.rbac.role.mapper.RoleMapper;
 import cn.imadc.application.skeleton.basic.rbac.role.service.IRoleService;
 import cn.imadc.application.skeleton.core.data.constant.Constant;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -33,7 +33,7 @@ public class RoleServiceImpl extends BaseMPServiceImpl<RoleMapper, Role> impleme
 
     @Override
     public ResponseW find(RoleFindReqDTO reqDTO) {
-        QueryWrapper<Role> queryWrapper = buildQueryWrapper(reqDTO);
+        LambdaQueryWrapper<Role> queryWrapper = buildQueryWrapper(reqDTO);
 
         if (!reqDTO.pageQuery()) return ResponseW.success(list(queryWrapper));
 
@@ -42,12 +42,17 @@ public class RoleServiceImpl extends BaseMPServiceImpl<RoleMapper, Role> impleme
         return ResponseW.success(pageData);
     }
 
-    private QueryWrapper<Role> buildQueryWrapper(RoleFindReqDTO reqDTO) {
-        QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(Constant.DEL_FLAG, Constant.NOT_DEL_VAL);
+    private LambdaQueryWrapper<Role> buildQueryWrapper(RoleFindReqDTO reqDTO) {
+        LambdaQueryWrapper<Role> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Role::getDelFlag, Constant.NOT_DEL_VAL);
 
+        // 角色类型
         if (StringUtils.isNotBlank(reqDTO.getType())) {
-            queryWrapper.eq("type", reqDTO.getType());
+            queryWrapper.eq(Role::getType, reqDTO.getType());
+        }
+        // 角色状态
+        if (null != reqDTO.getStatus()) {
+            queryWrapper.eq(Role::getStatus, reqDTO.getStatus());
         }
 
         return queryWrapper;

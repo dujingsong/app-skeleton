@@ -23,4 +23,8 @@ public class RoleFindReqDTO extends BaseSearchDTO implements Serializable {
      */
     private String type;
 
+    /**
+     * 0:启用；1：禁用
+     */
+    private Integer status;
 }

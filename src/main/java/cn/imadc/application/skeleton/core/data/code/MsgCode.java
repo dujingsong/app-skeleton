@@ -1,6 +1,6 @@
 package cn.imadc.application.skeleton.core.data.code;
 
-import cn.imadc.application.base.common.code.ResponseCode;
+import cn.imadc.application.base.common.code.BaseResponseCode;
 
 /**
  * <p>
@@ -10,7 +10,7 @@ import cn.imadc.application.base.common.code.ResponseCode;
  * @author 杜劲松
  * @since 2021-12-24
  */
-public final class MsgCode extends ResponseCode {
+public final class MsgCode extends BaseResponseCode {
 
     /**
      * ***************************************************其它错误*****************************************************
