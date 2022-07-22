@@ -12,5 +12,23 @@ import cn.imadc.application.base.common.constant.BaseConstant;
  */
 public final class Constant extends BaseConstant {
 
+    /**
+     * 超管ID
+     */
+    public static final Long SUPER_ADMIN_ID = 1L;
+
+    /**
+     * 超管角色ID
+     */
+    public static final Long SUPER_ADMIN_ROLE_ID = 1L;
+
+    /**
+     * 启用
+     */
+    public static final Integer ENABLE_STATUS = 0;
+    /**
+     * 禁用
+     */
+    public static final Integer DISABLE_STATUS = 1;
 
 }

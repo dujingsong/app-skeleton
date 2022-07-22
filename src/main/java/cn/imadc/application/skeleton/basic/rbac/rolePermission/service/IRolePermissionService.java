@@ -3,6 +3,8 @@ package cn.imadc.application.skeleton.basic.rbac.rolePermission.service;
 import cn.imadc.application.base.common.response.ResponseW;
 import cn.imadc.application.base.mybatisplus.repository.IBaseMPService;
 import cn.imadc.application.skeleton.basic.rbac.rolePermission.dto.request.RolePermissionFindReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.rolePermission.dto.request.RolePermissionGrantRolePermissionReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.rolePermission.dto.request.RolePermissionGrantedPermissionsReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.rolePermission.entity.RolePermission;
 
 /**
@@ -46,4 +48,20 @@ public interface IRolePermissionService extends IBaseMPService<RolePermission> {
      * @return 结果
      */
     ResponseW delete(RolePermission rolePermission);
+
+    /**
+     * 获取角色授予的权限
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    ResponseW grantedPermissions(RolePermissionGrantedPermissionsReqDTO reqDTO);
+
+    /**
+     * 授予角色权限
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    ResponseW grantRolePermission(RolePermissionGrantRolePermissionReqDTO reqDTO);
 }

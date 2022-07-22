@@ -32,6 +32,11 @@ public class User extends BaseEntity implements Serializable {
     private Long id;
 
     /**
+     * 状态：0启用；1禁用
+     */
+    private Integer status;
+
+    /**
      * 用户名称
      */
     private String name;

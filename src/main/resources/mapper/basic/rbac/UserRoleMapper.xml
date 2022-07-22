@@ -6,8 +6,8 @@
         SELECT t.type, t.id
         FROM role t
                  LEFT JOIN user_role ur ON ur.role_id = t.id
-        WHERE t.del_flag = 0
-          AND ur.del_flag = 0
+        WHERE t.del_flag = #{delFlag}
+          AND ur.del_flag = #{delFlag}
           AND ur.user_id = #{userId}
     </select>
 </mapper>

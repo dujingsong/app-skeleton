@@ -3,6 +3,8 @@ package cn.imadc.application.skeleton.basic.rbac.userRole.service;
 import cn.imadc.application.base.common.response.ResponseW;
 import cn.imadc.application.base.mybatisplus.repository.IBaseMPService;
 import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserRoleFindReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserRoleGrantRolesReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserRoleGrantedRolesReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.userRole.entity.UserRole;
 
 import java.util.List;
@@ -67,4 +69,20 @@ public interface IUserRoleService extends IBaseMPService<UserRole> {
      * @return 结果
      */
     List<Map<String, Object>> getUserRoleInfo(Long userId);
+
+    /**
+     * 获取用户已授予的角色
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    ResponseW grantedRoles(UserRoleGrantedRolesReqDTO reqDTO);
+
+    /**
+     * 给用户授予角色
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    ResponseW grantRoles(UserRoleGrantRolesReqDTO reqDTO);
 }

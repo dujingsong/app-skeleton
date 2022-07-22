@@ -6,15 +6,20 @@ import cn.imadc.application.base.common.response.ResponseW;
 import cn.imadc.application.base.mybatisplus.repository.impl.BaseMPServiceImpl;
 import cn.imadc.application.base.toolkit.encryption.Md5Util;
 import cn.imadc.application.skeleton.basic.rbac.user.dto.request.UserFindReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.user.dto.request.UserResetPasswordReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.user.dto.request.UserUpdatePwdReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.user.entity.User;
 import cn.imadc.application.skeleton.basic.rbac.user.mapper.UserMapper;
 import cn.imadc.application.skeleton.basic.rbac.user.service.IUserService;
+import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserBatchDeleteReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserBatchDisableReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserBatchEnableReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.userRole.service.IUserRoleService;
 import cn.imadc.application.skeleton.core.data.constant.Constant;
 import cn.imadc.application.skeleton.core.data.constant.Word;
 import cn.imadc.application.skeleton.core.data.property.AppProp;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -48,7 +53,7 @@ public class UserServiceImpl extends BaseMPServiceImpl<UserMapper, User> impleme
 
     @Override
     public ResponseW find(UserFindReqDTO reqDTO) {
-        QueryWrapper<User> queryWrapper = buildQueryWrapper(reqDTO);
+        LambdaQueryWrapper<User> queryWrapper = buildQueryWrapper(reqDTO);
 
         List<User> userList = list(queryWrapper);
         userList.forEach(this::handleUser);
@@ -81,9 +86,30 @@ public class UserServiceImpl extends BaseMPServiceImpl<UserMapper, User> impleme
         user.setItemFlowRoleIds(itemFlowRoleIds);
     }
 
-    private QueryWrapper<User> buildQueryWrapper(UserFindReqDTO reqDTO) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(Constant.DEL_FLAG, Constant.NOT_DEL_VAL);
+    private LambdaQueryWrapper<User> buildQueryWrapper(UserFindReqDTO reqDTO) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getDelFlag, Constant.NOT_DEL_VAL);
+
+        // 开始结束时间
+        if (null != reqDTO.getStartDateTime()) {
+            queryWrapper.ge(User::getCreateTime, cn.imadc.application.base.toolkit.date.DateUtil.formatFull(reqDTO.getStartDateTime()));
+        }
+        if (null != reqDTO.getEndDateTime()) {
+            queryWrapper.le(User::getCreateTime, cn.imadc.application.base.toolkit.date.DateUtil.formatFull(reqDTO.getEndDateTime()));
+        }
+
+        // searchStr
+        if (StringUtils.isNotEmpty(reqDTO.getKeywords())) {
+            queryWrapper.and(wrapper -> wrapper.like(User::getName, reqDTO.getKeywords()));
+        }
+
+        // 用户状态
+        if (null != reqDTO.getStatus()) {
+            queryWrapper.eq(User::getStatus, reqDTO.getStatus());
+        }
+
+        // 排除超管
+        queryWrapper.ne(User::getId, Constant.SUPER_ADMIN_ID);
 
         return queryWrapper;
     }
@@ -91,6 +117,9 @@ public class UserServiceImpl extends BaseMPServiceImpl<UserMapper, User> impleme
     @Transactional
     @Override
     public ResponseW add(User user) {
+        if (userNameExist(user.getUsername(), user.getId())) {
+            return ResponseW.error(Word.USERNAME_EXIST);
+        }
         user.setPassword(Md5Util.md5(user.getPassword()));
         boolean status = save(user);
         if (status) {
@@ -113,9 +142,21 @@ public class UserServiceImpl extends BaseMPServiceImpl<UserMapper, User> impleme
         userRoleService.bindUser(user.getId(), roleIds);
     }
 
+    private boolean userNameExist(String userName, Long excludeId) {
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUsername, userName);
+        if (null != excludeId) {
+            lambdaQueryWrapper.ne(User::getId, excludeId);
+        }
+        return count(lambdaQueryWrapper) > 0;
+    }
+
     @Transactional
     @Override
     public ResponseW edit(User user) {
+        if (userNameExist(user.getUsername(), user.getId())) {
+            return ResponseW.error(Word.USERNAME_EXIST);
+        }
         boolean status = updateById(user);
         if (status) {
             handleRole(user);
@@ -215,5 +256,37 @@ public class UserServiceImpl extends BaseMPServiceImpl<UserMapper, User> impleme
             throw new BizException(Word.OP_FAIL);
         }
         return ResponseW.success();
+    }
+
+    @Override
+    public ResponseW batchDelete(UserBatchDeleteReqDTO reqDTO) {
+        LambdaUpdateWrapper<User> userUpdateWrapper = new LambdaUpdateWrapper<>();
+        userUpdateWrapper.in(User::getId, reqDTO.getIdSet());
+        userUpdateWrapper.set(User::getDelFlag, Constant.DEL_VAL);
+        return update(userUpdateWrapper) ? ResponseW.success() : ResponseW.error();
+    }
+
+    @Override
+    public ResponseW batchDisable(UserBatchDisableReqDTO reqDTO) {
+        LambdaUpdateWrapper<User> userUpdateWrapper = new LambdaUpdateWrapper<>();
+        userUpdateWrapper.in(User::getId, reqDTO.getIdSet());
+        userUpdateWrapper.set(User::getStatus, Constant.DISABLE_STATUS);
+        return update(userUpdateWrapper) ? ResponseW.success() : ResponseW.error();
+    }
+
+    @Override
+    public ResponseW batchEnable(UserBatchEnableReqDTO reqDTO) {
+        LambdaUpdateWrapper<User> userUpdateWrapper = new LambdaUpdateWrapper<>();
+        userUpdateWrapper.in(User::getId, reqDTO.getIdSet());
+        userUpdateWrapper.set(User::getStatus, Constant.ENABLE_STATUS);
+        return update(userUpdateWrapper) ? ResponseW.success() : ResponseW.error();
+    }
+
+    @Override
+    public ResponseW resetPassword(UserResetPasswordReqDTO reqDTO) {
+        LambdaUpdateWrapper<User> userUpdateWrapper = new LambdaUpdateWrapper<>();
+        userUpdateWrapper.eq(User::getId, reqDTO.getId());
+        userUpdateWrapper.set(User::getPassword, Md5Util.md5(reqDTO.getNewPassword()));
+        return update(userUpdateWrapper) ? ResponseW.success() : ResponseW.error();
     }
 }

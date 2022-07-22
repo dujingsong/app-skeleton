@@ -57,4 +57,12 @@ public interface IPermissionService extends IBaseMPService<Permission> {
      * @return 权限
      */
     List<Permission> getUserPermission(@Param("userId") Long userId);
+
+    /**
+     * 查询树形结构
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    ResponseW tree(PermissionFindReqDTO reqDTO);
 }

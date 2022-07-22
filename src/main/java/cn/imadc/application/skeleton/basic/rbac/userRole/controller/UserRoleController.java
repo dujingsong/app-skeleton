@@ -3,6 +3,8 @@ package cn.imadc.application.skeleton.basic.rbac.userRole.controller;
 
 import cn.imadc.application.base.common.response.ResponseW;
 import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserRoleFindReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserRoleGrantRolesReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserRoleGrantedRolesReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.userRole.entity.UserRole;
 import cn.imadc.application.skeleton.basic.rbac.userRole.service.IUserRoleService;
 import lombok.AllArgsConstructor;
@@ -68,5 +70,27 @@ public class UserRoleController {
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public ResponseW delete(@RequestBody UserRole userRole) {
         return userRoleService.delete(userRole);
+    }
+
+    /**
+     * 获取用户已授予的角色
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    @RequestMapping(value = "grantedRoles", method = RequestMethod.POST)
+    public ResponseW grantedRoles(@RequestBody UserRoleGrantedRolesReqDTO reqDTO) {
+        return userRoleService.grantedRoles(reqDTO);
+    }
+
+    /**
+     * 给用户授予角色
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    @RequestMapping(value = "grantRoles", method = RequestMethod.POST)
+    public ResponseW grantRoles(@RequestBody UserRoleGrantRolesReqDTO reqDTO) {
+        return userRoleService.grantRoles(reqDTO);
     }
 }

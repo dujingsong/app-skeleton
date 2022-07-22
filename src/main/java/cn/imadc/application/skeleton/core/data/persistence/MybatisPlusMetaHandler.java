@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 /**
  * <p>
  * mybatis plus 持久化时添加数据配置
@@ -22,18 +24,23 @@ public class MybatisPlusMetaHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         RequestContext currentContext = RequestContext.getCurrentContext();
 
-        this.setFieldValByName(Constant.CREATE_BY, currentContext.get(ReqCtxConstant.NAME, String.class), metaObject);
-        this.setFieldValByName(Constant.CREATE_BY_ID, currentContext.get(ReqCtxConstant.ID, Long.class), metaObject);
+        this.setFieldValByName(Constant.CREATE_BY_F, currentContext.get(ReqCtxConstant.NAME, String.class), metaObject);
+        this.setFieldValByName(Constant.CREATE_BY_ID_F, currentContext.get(ReqCtxConstant.ID, Long.class), metaObject);
 
-        this.setFieldValByName(Constant.UPDATE_BY, currentContext.get(ReqCtxConstant.NAME, String.class), metaObject);
-        this.setFieldValByName(Constant.UPDATE_BY_ID, currentContext.get(ReqCtxConstant.ID, Long.class), metaObject);
+        this.setFieldValByName(Constant.CREATE_TIME_F, LocalDateTime.now(), metaObject);
+        this.setFieldValByName(Constant.UPDATE_TIME_F, LocalDateTime.now(), metaObject);
+
+        this.setFieldValByName(Constant.UPDATE_BY_F, currentContext.get(ReqCtxConstant.NAME, String.class), metaObject);
+        this.setFieldValByName(Constant.UPDATE_BY_ID_F, currentContext.get(ReqCtxConstant.ID, Long.class), metaObject);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         RequestContext currentContext = RequestContext.getCurrentContext();
 
-        this.setFieldValByName(Constant.UPDATE_BY, currentContext.get(ReqCtxConstant.NAME, String.class), metaObject);
-        this.setFieldValByName(Constant.UPDATE_BY_ID, currentContext.get(ReqCtxConstant.ID, Long.class), metaObject);
+        this.setFieldValByName(Constant.UPDATE_BY_F, currentContext.get(ReqCtxConstant.NAME, String.class), metaObject);
+        this.setFieldValByName(Constant.UPDATE_BY_ID_F, currentContext.get(ReqCtxConstant.ID, Long.class), metaObject);
+
+        this.setFieldValByName(Constant.UPDATE_TIME_F, LocalDateTime.now(), metaObject);
     }
 }

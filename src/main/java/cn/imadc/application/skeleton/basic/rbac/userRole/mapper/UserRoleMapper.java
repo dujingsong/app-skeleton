@@ -25,5 +25,5 @@ public interface UserRoleMapper extends BaseMapper<UserRole> {
      * @param userId 用户ID
      * @return 绑定的角色信息
      */
-    List<Role> getUserRoleInfo(@Param("userId") Long userId);
+    List<Role> getUserRoleInfo(@Param("userId") Long userId, @Param("delFlag") Integer delFlag);
 }

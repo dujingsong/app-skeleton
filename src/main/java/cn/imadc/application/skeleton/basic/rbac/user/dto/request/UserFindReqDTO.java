@@ -18,5 +18,9 @@ import java.io.Serializable;
 @Setter
 public class UserFindReqDTO extends BaseSearchDTO implements Serializable {
 
+    /**
+     * 0:启用；1：禁用
+     */
+    private Integer status;
 
 }

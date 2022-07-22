@@ -2,9 +2,11 @@ package cn.imadc.application.skeleton.basic.rbac.role.service;
 
 import cn.imadc.application.base.common.response.ResponseW;
 import cn.imadc.application.base.mybatisplus.repository.IBaseMPService;
+import cn.imadc.application.skeleton.basic.rbac.role.dto.request.RoleBatchDeleteReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.role.dto.request.RoleBatchDisableReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.role.dto.request.RoleBatchEnableReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.role.dto.request.RoleFindReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.role.entity.Role;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -57,4 +59,28 @@ public interface IRoleService extends IBaseMPService<Role> {
      * @return 绑定的角色信息
      */
     List<Role> getUserRole(Long userId);
+
+    /**
+     * 批量删除
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    ResponseW batchDelete(RoleBatchDeleteReqDTO reqDTO);
+
+    /**
+     * 批量禁用
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    ResponseW batchDisable(RoleBatchDisableReqDTO reqDTO);
+
+    /**
+     * 批量启用
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    ResponseW batchEnable(RoleBatchEnableReqDTO reqDTO);
 }

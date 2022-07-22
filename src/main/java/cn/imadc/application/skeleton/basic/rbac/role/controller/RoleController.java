@@ -2,6 +2,9 @@ package cn.imadc.application.skeleton.basic.rbac.role.controller;
 
 
 import cn.imadc.application.base.common.response.ResponseW;
+import cn.imadc.application.skeleton.basic.rbac.role.dto.request.RoleBatchDeleteReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.role.dto.request.RoleBatchDisableReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.role.dto.request.RoleBatchEnableReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.role.dto.request.RoleFindReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.role.entity.Role;
 import cn.imadc.application.skeleton.basic.rbac.role.service.IRoleService;
@@ -68,5 +71,38 @@ public class RoleController {
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public ResponseW delete(@RequestBody Role role) {
         return roleService.delete(role);
+    }
+
+    /**
+     * 批量删除
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    @RequestMapping(value = "batchDelete", method = RequestMethod.POST)
+    public ResponseW batchDelete(@RequestBody RoleBatchDeleteReqDTO reqDTO) {
+        return roleService.batchDelete(reqDTO);
+    }
+
+    /**
+     * 批量禁用
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    @RequestMapping(value = "batchDisable", method = RequestMethod.POST)
+    public ResponseW batchDisable(@RequestBody RoleBatchDisableReqDTO reqDTO) {
+        return roleService.batchDisable(reqDTO);
+    }
+
+    /**
+     * 批量启用
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    @RequestMapping(value = "batchEnable", method = RequestMethod.POST)
+    public ResponseW batchEnable(@RequestBody RoleBatchEnableReqDTO reqDTO) {
+        return roleService.batchEnable(reqDTO);
     }
 }

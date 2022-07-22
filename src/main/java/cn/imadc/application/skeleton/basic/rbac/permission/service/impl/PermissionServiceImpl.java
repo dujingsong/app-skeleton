@@ -1,11 +1,13 @@
 package cn.imadc.application.skeleton.basic.rbac.permission.service.impl;
 
 import cn.imadc.application.base.common.response.ResponseW;
+import cn.imadc.application.base.data.structure.tree.TreeNode;
 import cn.imadc.application.base.mybatisplus.repository.impl.BaseMPServiceImpl;
 import cn.imadc.application.skeleton.basic.rbac.permission.dto.request.PermissionFindReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.permission.entity.Permission;
 import cn.imadc.application.skeleton.basic.rbac.permission.mapper.PermissionMapper;
 import cn.imadc.application.skeleton.basic.rbac.permission.service.IPermissionService;
+import cn.imadc.application.skeleton.basic.rbac.permission.util.PermissionUtil;
 import cn.imadc.application.skeleton.core.data.constant.Constant;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -73,5 +75,13 @@ public class PermissionServiceImpl extends BaseMPServiceImpl<PermissionMapper, P
     @Override
     public List<Permission> getUserPermission(Long userId) {
         return permissionMapper.getUserPermission(userId);
+    }
+
+    @Override
+    public ResponseW tree(PermissionFindReqDTO reqDTO) {
+        @SuppressWarnings("unchecked")
+        List<Permission> permissions = (List<Permission>) find(reqDTO).getBody();
+        List<TreeNode> permissionTree = PermissionUtil.tree(permissions);
+        return ResponseW.success(permissionTree);
     }
 }

@@ -3,8 +3,12 @@ package cn.imadc.application.skeleton.basic.rbac.user.service;
 import cn.imadc.application.base.common.response.ResponseW;
 import cn.imadc.application.base.mybatisplus.repository.IBaseMPService;
 import cn.imadc.application.skeleton.basic.rbac.user.dto.request.UserFindReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.user.dto.request.UserResetPasswordReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.user.dto.request.UserUpdatePwdReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.user.entity.User;
+import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserBatchDeleteReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserBatchDisableReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserBatchEnableReqDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -84,4 +88,36 @@ public interface IUserService extends IBaseMPService<User> {
      * @return 结果
      */
     ResponseW updatePassword(UserUpdatePwdReqDTO reqDTO);
+
+    /**
+     * 批量删除
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    ResponseW batchDelete(UserBatchDeleteReqDTO reqDTO);
+
+    /**
+     * 批量禁用
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    ResponseW batchDisable(UserBatchDisableReqDTO reqDTO);
+
+    /**
+     * 批量启用
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    ResponseW batchEnable(UserBatchEnableReqDTO reqDTO);
+
+    /**
+     * 重置密码
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    ResponseW resetPassword(UserResetPasswordReqDTO reqDTO);
 }

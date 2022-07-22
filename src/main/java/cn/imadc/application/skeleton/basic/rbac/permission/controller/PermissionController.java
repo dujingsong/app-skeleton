@@ -69,4 +69,15 @@ public class PermissionController {
     public ResponseW delete(@RequestBody Permission permission) {
         return permissionService.delete(permission);
     }
+
+    /**
+     * 查询树形结构
+     *
+     * @param reqDTO 参数
+     * @return 结果
+     */
+    @RequestMapping(value = "tree", method = RequestMethod.POST)
+    public ResponseW tree(@RequestBody PermissionFindReqDTO reqDTO) {
+        return permissionService.tree(reqDTO);
+    }
 }

@@ -1,14 +1,19 @@
 package cn.imadc.application.skeleton.basic.rbac.userRole.service.impl;
 
+import cn.imadc.application.base.common.exception.BizException;
 import cn.imadc.application.base.common.response.ResponseW;
 import cn.imadc.application.base.mybatisplus.repository.impl.BaseMPServiceImpl;
 import cn.imadc.application.skeleton.basic.rbac.role.entity.Role;
 import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserRoleFindReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserRoleGrantRolesReqDTO;
+import cn.imadc.application.skeleton.basic.rbac.userRole.dto.request.UserRoleGrantedRolesReqDTO;
 import cn.imadc.application.skeleton.basic.rbac.userRole.entity.UserRole;
 import cn.imadc.application.skeleton.basic.rbac.userRole.mapper.UserRoleMapper;
 import cn.imadc.application.skeleton.basic.rbac.userRole.service.IUserRoleService;
 import cn.imadc.application.skeleton.core.data.constant.Constant;
+import cn.imadc.application.skeleton.core.data.constant.Word;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -17,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -92,12 +94,43 @@ public class UserRoleServiceImpl extends BaseMPServiceImpl<UserRoleMapper, UserR
 
     @Override
     public List<Map<String, Object>> getUserRoleInfo(Long userId) {
-        List<Role> roleList = userRoleMapper.getUserRoleInfo(userId);
+        List<Role> roleList = userRoleMapper.getUserRoleInfo(userId, Constant.NOT_DEL_VAL);
         return roleList.stream().map(item -> {
             Map<String, Object> map = new HashMap<>();
             map.put("type", item.getType());
             map.put("id", item.getId());
             return map;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public ResponseW grantedRoles(UserRoleGrantedRolesReqDTO reqDTO) {
+        List<Role> roleList = userRoleMapper.getUserRoleInfo(reqDTO.getUserId(), Constant.NOT_DEL_VAL);
+        Set<Long> roleIdSet = new HashSet<>();
+        roleList.forEach(r -> roleIdSet.add(r.getId()));
+        return ResponseW.success(roleIdSet);
+    }
+
+    @Override
+    public ResponseW grantRoles(UserRoleGrantRolesReqDTO reqDTO) {
+        LambdaUpdateWrapper<UserRole> userUpdateWrapper = new LambdaUpdateWrapper<>();
+        userUpdateWrapper.eq(UserRole::getUserId, reqDTO.getUserId());
+        userUpdateWrapper.set(UserRole::getDelFlag, Constant.DEL_VAL);
+        userRoleMapper.update(null, userUpdateWrapper);
+
+        Set<Long> roleIdSet = reqDTO.getRoleIdSet();
+        if (!CollectionUtils.isEmpty(roleIdSet)) {
+            List<UserRole> userRoles = new ArrayList<>(roleIdSet.size());
+            roleIdSet.forEach(r -> {
+                UserRole userRole = new UserRole();
+                userRole.setUserId(reqDTO.getUserId());
+                userRole.setRoleId(r);
+                userRoles.add(userRole);
+            });
+
+            if (!this.saveBatch(userRoles)) throw new BizException(Word.OP_FAIL);
+        }
+
+        return ResponseW.success();
     }
 }
